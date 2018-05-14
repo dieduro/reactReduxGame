@@ -1,3 +1,12 @@
+@import url('https://fonts.googleapis.com/css?family=Joti+One');
+/* ... body definition ... */
+
+html,
+body {
+  overflow: hidden;
+  height: 100%;
+}
+
 body {
   margin: 0;
   padding: 0;
