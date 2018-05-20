@@ -11,6 +11,8 @@ import Heart from "./Heart";
 import StartGame from "./StartGame";
 import Title from "./Title";
 import { gameHeight } from "../utils/constants";
+import Leaderboard from "./Leaderboard";
+import { signIn } from "auth0-web";
 
 
 const Canvas = props => {
@@ -20,6 +22,7 @@ const Canvas = props => {
     window.innerWidth,
     gameHeight
   ];
+
   return <svg id="aliens-go-home-canvas" preserveAspectRatio="xMaxYMax none" onMouseMove={props.trackMouse} viewBox={viewBox}>
       <defs>
         <filter id="shadow">
@@ -35,6 +38,7 @@ const Canvas = props => {
       {!props.gameState.started && <g>
           <StartGame onClick={() => props.startGame()} />
           <Title />
+          <Leaderboard currentPlayer={props.currentPlayer} authenticate={signIn} leaderboard={props.players} />
         </g>}
 
       {props.gameState.started && <g>
@@ -51,7 +55,26 @@ const Canvas = props => {
 
 Canvas.propTypes = {
   angle: PropTypes.number.isRequired,
-  trackMouse: PropTypes.func.isRequired
+  trackMouse: PropTypes.func.isRequired,
+  currentPlayer: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    maxScore: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    picture: PropTypes.string.isRequired
+  }),
+  players: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      maxScore: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+      picture: PropTypes.string.isRequired
+    })
+  )
+};
+
+Canvas.defaultProps = {
+  currentPlayer: null,
+  players: null
 };
 
 export default Canvas;
