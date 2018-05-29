@@ -6,6 +6,7 @@ const jwksClient = require("jwks-rsa");
 
 const client = jwksClient({
   jwksUri: "https://dieduro.auth0.com/.well-known/jwks.json"
+
 });
 
 const players = [
@@ -49,6 +50,7 @@ const players = [
 
 const verifyPlayer = (token, cb) => {
   const uncheckedToken = jwt.decode(token, { complete: true });
+  console.log("uncheckedToken")
   const kid = uncheckedToken.header.kid;
 
   client.getSigningKey(kid, (err, key) => {

@@ -1,21 +1,26 @@
 import React, { Component } from "react";
-import * as Auth0 from "auth0-web";
 import PropTypes from "prop-types";
 import { getCanvasPosition } from "./utils/formulas";
 import Canvas from "./components/Canvas";
 import io from "socket.io-client";
+import * as Auth0 from "auth0-web";
 
 
 Auth0.configure({
   domain: "dieduro.auth0.com",
-  clientID: "03j82lsHHwFEJLkm72NTmLZcOmBiO3bO",
+  clientID: "6trgE9OqbO2YYn28Y1XIRIZ2TOF9zE00",
   redirectUri: "http://localhost:3000/",
   responseType: "token id_token",
   scope: "openid profile manage:points",
-  audience: "http://localhost:3001/"
+  audience: "localhost:3000"
 });
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.shoot = this.shoot.bind(this);
+  }
+
   componentDidMount() {
     const self = this;
     Auth0.handleAuthCallback();
@@ -24,7 +29,12 @@ class App extends Component {
       if (!auth) return;
 
       const playerProfile = Auth0.getProfile();
-      const currentPlayer = { id: playerProfile.sub, maxScore: 0, name: playerProfile.name, picture: playerProfile.picture };
+      const currentPlayer = {
+        id: playerProfile.sub,
+        maxScore: 0,
+        name: playerProfile.name,
+        picture: playerProfile.picture
+      };
 
       this.props.loggedIn(currentPlayer);
 
@@ -70,6 +80,10 @@ class App extends Component {
     this.canvasMousePosition = getCanvasPosition(event);
   }
 
+  shoot() {
+    this.props.shoot(this.canvasMousePosition);
+  }
+
   render() {
     return (
       <Canvas
@@ -78,7 +92,8 @@ class App extends Component {
         gameState={this.props.gameState}
         players={this.props.players}
         startGame={this.props.startGame}
-        trackMouse={event => (this.trackMouse(event))}
+        trackMouse={event => this.trackMouse(event)}
+        shoot={this.shoot}
       />
     );
   }
@@ -101,7 +116,13 @@ App.propTypes = {
     ).isRequired
   }).isRequired,
   moveObjects: PropTypes.func.isRequired,
-  startGame: PropTypes.func.isRequired
+  startGame: PropTypes.func.isRequired,
+  shoot: PropTypes.func.isRequired
+};
+
+App.defaultProps = {
+  currentPlayer: null,
+  players: null
 };
 
 export default App;

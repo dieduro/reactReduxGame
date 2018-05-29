@@ -4,9 +4,9 @@ import {
   leaderboardLoaded,
   loggedIn,
   moveObjects,
-  startGame
+  startGame,
+  shoot
 } from "../actions/index";
-
 const mapStateToProps = state => ({
   angle: state.angle,
   gameState: state.gameState,
@@ -26,6 +26,9 @@ const mapDispatchToProps = dispatch => ({
   },
   startGame: () => {
     dispatch(startGame());
+  },
+  shoot: mousePosition => {
+    dispatch(shoot(mousePosition));
   }
 });
 
